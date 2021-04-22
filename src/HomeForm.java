@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Form extends JFrame implements ActionListener{
+public class HomeForm extends JFrame implements ActionListener{
     private static final long serialVersionUID = -1450150616029361695L;
     private JButton btnServerConfigure;
     private JButton btnServerMonitor;
@@ -11,7 +11,7 @@ public class Form extends JFrame implements ActionListener{
     private JButton btnServerClose;
     private GridBagConstraints gbc = new GridBagConstraints();
 
-    public Form(){
+    public HomeForm(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("HOME");
         setBounds(0, 0, 650, 550);

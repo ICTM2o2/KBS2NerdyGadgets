@@ -1,3 +1,5 @@
-public class OntwerperForm {
+import javax.swing.JFrame;
+
+public class OntwerperForm extends JFrame {
     
 }
