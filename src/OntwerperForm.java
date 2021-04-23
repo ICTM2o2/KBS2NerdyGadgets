@@ -11,19 +11,19 @@ public class OntwerperForm extends JFrame implements ActionListener{
     private JButton opslaan;
     private JButton ontwerpLaden;
     private JButton terugKnop;
+    private JComboBox componentBox;
     ArrayList<JPanel> components = new ArrayList<JPanel>(); 
 
     public OntwerperForm(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("HOME");
-        setBounds(0, 0, 650, 700);
-        //setLayout(new GridBagLayout());
+        setBounds(0, 0, 800, 700);
 
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.blue);
         add(panel, BorderLayout.NORTH);
 
-        gbc.insets = new Insets(20,5,0,5);
+        gbc.insets = new Insets(20,5,10,5);
         gbc.gridx = 0;
         gbc.gridy = 0;
         panel.add(new JLabel("Server Ontwerper"),gbc);
@@ -48,17 +48,27 @@ public class OntwerperForm extends JFrame implements ActionListener{
         sidePanel.setPreferredSize(new Dimension(200,0));
         add(sidePanel, BorderLayout.WEST);
 
-        JPanel compListPanel = new JPanel(new GridLayout(0, 2));
+        JPanel compListPanel = new JPanel(new FlowLayout());
         compListPanel.setBackground(Color.GREEN);
-        compListPanel.setSize(new Dimension(200,0));
+
+        componentBox = new JComboBox();
+        componentBox.addItem("SERVER1");
+        componentBox.addItem("SERVER2");
+        compListPanel.add(new JLabel("Server: "));
+        compListPanel.add(componentBox);
+        compListPanel.add(new JLabel("Beschikbaarheid: "));
+        compListPanel.add(new JTextField(4));
+        compListPanel.add(new JButton("Server toevoegen"));
         
         
         sidePanel.add(compListPanel);
-        sidePanel.add(new JLabel("BESCHIKBAARHEID: 0%"));
 
-        JPanel tekenPanel = new JPanel();
-        tekenPanel.setBackground(Color.YELLOW);
-        add(tekenPanel, BorderLayout.CENTER);
+        JPanel beschikbaarheidPanel = new JPanel(new FlowLayout());
+        beschikbaarheidPanel.setBackground(Color.CYAN);
+        beschikbaarheidPanel.add(new JLabel("BESCHIKBAARHEID: 0%"));
+        sidePanel.add(beschikbaarheidPanel);
+
+        add(new dragPanel());
 
     }
 
