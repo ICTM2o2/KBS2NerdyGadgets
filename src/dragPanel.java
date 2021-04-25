@@ -17,14 +17,18 @@ public class dragPanel extends JPanel {
     private servComponent currentServ;
     servComponent server1 = new servComponent(image, 50, "server1");
     
+    servComponent server2 = new servComponent(image, 50, "server2");
+    
 
     public void addServer(servComponent server){
-        //compList.add
+        compList.add(server);
     }
 
     
     dragPanel(){
+        server1.currentPt = new Point(100,100);
         compList.add(server1);
+        compList.add(server2);
         imageCorner = new Point(0,0);
         ClickListener clickListener = new ClickListener();
         DragListener dragListener = new DragListener();
@@ -35,7 +39,8 @@ public class dragPanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         for (servComponent servComponent : compList) {
-            image.paintIcon(this, g, (int)servComponent.getCurrentPt().getX(), (int)servComponent.getCurrentPt().getY());
+            servComponent.getImage().paintIcon(this, g, (int)servComponent.currentPt.getX(), (int)servComponent.currentPt.getY());
+            g.drawString(servComponent.getName(), (int)servComponent.currentPt.getX() + 5, (int)servComponent.currentPt.getY() + servComponent.getImage().getIconHeight() + 10);
         }
 
         //image.paintIcon(this, g, (int)imageCorner.getX(), (int)imageCorner.getY());
@@ -53,11 +58,12 @@ public class dragPanel extends JPanel {
             
             
             for (servComponent servComponent : compList) {
-                if ((e.getPoint().getX() > servComponent.getCurrentPt().getX()) && 
-                (e.getPoint().getX() < (servComponent.getCurrentPt().getX() + WIDTH)) &&
-                (e.getPoint().getY() > servComponent.getCurrentPt().getY()) &&
-                (e.getPoint().getY() < (servComponent.getCurrentPt().getY() + HEIGHT))){
+                if ((e.getPoint().getX() > servComponent.currentPt.getX()) && 
+                (e.getPoint().getX() < (servComponent.currentPt.getX() + WIDTH)) &&
+                (e.getPoint().getY() > servComponent.currentPt.getY()) &&
+                (e.getPoint().getY() < (servComponent.currentPt.getY() + HEIGHT))){
                     dragValid = true;
+                    currentServ = servComponent;
                     return;
                 }
                 else{
@@ -72,7 +78,7 @@ public class dragPanel extends JPanel {
         public void mouseDragged(MouseEvent e) { 
                 if(dragValid){
                     Point currentPt = e.getPoint();    
-                    imageCorner.translate(
+                    currentServ.currentPt.translate(
                             (int)(currentPt.getX() - prevPt.getX()),
                             (int)(currentPt.getY() - prevPt.getY())
                     );
