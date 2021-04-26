@@ -8,10 +8,14 @@ public class OntwerperForm extends JFrame implements ActionListener{
     private GridBagConstraints gbc = new GridBagConstraints();
 
     //buttons etc
-    private JButton opslaan;
-    private JButton ontwerpLaden;
-    private JButton terugKnop;
-    private JComboBox componentBox;
+    private JButton saveBtn;
+    private JButton loadBtn;
+    private JButton backBtn;
+    private JTextField nameTxt;
+    private JTextField availTxt;
+    private JButton addBtn;
+    private dragPanel dPanel = new dragPanel();
+    private JComboBox<servComponent.serverType> componentBox;
     ArrayList<JPanel> components = new ArrayList<JPanel>(); 
 
     public OntwerperForm(){
@@ -28,17 +32,17 @@ public class OntwerperForm extends JFrame implements ActionListener{
         gbc.gridy = 0;
         panel.add(new JLabel("Server Ontwerper"),gbc);
         gbc.gridx = 1;
-        opslaan = new JButton("Ontwerp opslaan");
-        opslaan.addActionListener(this);
-        panel.add(opslaan,gbc);
+        saveBtn = new JButton("Ontwerp opslaan");
+        saveBtn.addActionListener(this);
+        panel.add(saveBtn,gbc);
         gbc.gridx = 2;
-        ontwerpLaden = new JButton("Ontwerp laden");
-        ontwerpLaden.addActionListener(this);
-        panel.add(ontwerpLaden,gbc);
+        loadBtn = new JButton("Ontwerp laden");
+        loadBtn.addActionListener(this);
+        panel.add(loadBtn,gbc);
         gbc.gridx = 3;
-        terugKnop = new JButton("Terug");
-        terugKnop.addActionListener(this);
-        panel.add(terugKnop,gbc);
+        backBtn = new JButton("Terug");
+        backBtn.addActionListener(this);
+        panel.add(backBtn,gbc);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridheight = 4;
@@ -51,14 +55,21 @@ public class OntwerperForm extends JFrame implements ActionListener{
         JPanel compListPanel = new JPanel(new FlowLayout());
         compListPanel.setBackground(Color.GREEN);
 
-        componentBox = new JComboBox();
-        componentBox.addItem("SERVER1");
-        componentBox.addItem("SERVER2");
-        compListPanel.add(new JLabel("Server: "));
+        compListPanel.add(new JLabel("Server name: "));
+        nameTxt = new JTextField(7);
+        compListPanel.add(nameTxt);
+        compListPanel.add(new JLabel("Server type: "));
+        componentBox = new JComboBox<>();
+        componentBox.addItem(servComponent.serverType.FIREWALL);
+        componentBox.addItem(servComponent.serverType.WEB);
+        componentBox.addItem(servComponent.serverType.DATABASE);
         compListPanel.add(componentBox);
+        availTxt = new JTextField(5);
         compListPanel.add(new JLabel("Beschikbaarheid: "));
-        compListPanel.add(new JTextField(4));
-        compListPanel.add(new JButton("Server toevoegen"));
+        compListPanel.add(availTxt);
+        addBtn = new JButton("Server toevoegen");
+        addBtn.addActionListener(this);
+        compListPanel.add(addBtn);
         
         
         sidePanel.add(compListPanel);
@@ -68,13 +79,22 @@ public class OntwerperForm extends JFrame implements ActionListener{
         beschikbaarheidPanel.add(new JLabel("BESCHIKBAARHEID: 0%"));
         sidePanel.add(beschikbaarheidPanel);
 
-        add(new dragPanel());
+        add(dPanel);
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
-        
+        if (e.getSource() == addBtn){
+            Double availability;
+            try {
+                availability = Double.parseDouble(availTxt.getText());
+            } catch (Exception ex) {
+                availability = 0.0;
+            }
+            dPanel.addServer(new servComponent(availability, nameTxt.getText(), (servComponent.serverType)componentBox.getSelectedItem()));
+            dPanel.repaint();
+        }
     }
 }
