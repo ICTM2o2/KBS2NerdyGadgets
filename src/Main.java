@@ -1,11 +1,14 @@
 public class Main {
-    private static HomeForm form1;
+    private static HomeForm a;
     public static void main(String[] args) {
-        // form1 = new HomeForm();
-        // form1.setVisible(true);
+         //HomeForm a = new HomeForm();
+         //a.setVisible(true);
 
-        OntwerperForm o = new OntwerperForm();
-        o.setVisible(true);
+         OptimalisatieForm b = new OptimalisatieForm();
+         b.setVisible(true);
+
+         OntwerperForm o = new OntwerperForm();
+         o.setVisible(true);
 
     }
 }
