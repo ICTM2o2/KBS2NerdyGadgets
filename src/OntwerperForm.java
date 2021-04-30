@@ -1,7 +1,13 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class OntwerperForm extends JFrame implements ActionListener{
@@ -95,6 +101,43 @@ public class OntwerperForm extends JFrame implements ActionListener{
             }
             dPanel.addServer(new servComponent(availability, nameTxt.getText(), (servComponent.serverType)componentBox.getSelectedItem()));
             dPanel.repaint();
+        }
+        else if (e.getSource() == loadBtn){
+            JFileChooser f = new JFileChooser();
+            f.setFileFilter(new FileNameExtensionFilter("Ontwerp bestand", "ontwerp"));
+            f.setDialogTitle("Kies een plek om het ontwerp op te slaan.");
+            try {
+                Files.createDirectories(Path.of(System.getProperty("user.dir")+"\\ontwerpen"));
+            } catch (Exception ex) {
+                //TODO: handle exception
+            }
+            f.setCurrentDirectory(new File(System.getProperty("user.dir")+"\\ontwerpen"));
+            int result = f.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION){
+                File fi= f.getSelectedFile();
+                try {
+                    dPanel.loadDesign(Files.readString(Path.of(fi.getAbsolutePath())));
+                } catch (Exception exception) {
+                    System.out.println("eww error");
+                }
+            }
+        }
+        else if (e.getSource() == saveBtn){
+            String name = JOptionPane.showInputDialog("Ontwerp naam:");
+            if (name != null){
+                if (!name.isEmpty()){
+                    Path savePath = Path.of(System.getProperty("user.dir") + "\\ontwerpen");
+                    try {
+                        File f = new File(savePath + "\\"+ name+ ".ontwerp");
+                        f.getParentFile().mkdirs();
+                        FileWriter fw = new FileWriter(f);
+                        fw.write(dPanel.getCurrentDesign());
+                        fw.close();
+                    } catch (Exception ex) {
+                        System.out.println(ex.getMessage());
+                    }
+                }
+            }
         }
     }
 }

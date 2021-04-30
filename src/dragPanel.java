@@ -121,4 +121,64 @@ public class dragPanel extends JPanel {
             }
         }
     }
+
+    private void clearServers(){
+        compList.clear();
+        firewalls.clear();
+        databases.clear();
+        webs.clear();
+    }
+
+    public void loadDesign(String designString){
+        clearServers();
+        for (String serv : designString.split("\n")) {
+            String[] temp = serv.split("[|]");//avail name type x y 
+            servComponent.serverType type; 
+            switch (temp[2]){
+                case "fw":
+                    type = servComponent.serverType.FIREWALL;
+                    break;
+                case "db":
+                    type = servComponent.serverType.DATABASE;
+                    break;
+                case "web":
+                    type = servComponent.serverType.WEB;
+                    break;
+                default:
+                    type = servComponent.serverType.FIREWALL;
+                    break;
+            }
+            System.out.println(Double.parseDouble(temp[0]));
+            System.out.println(temp[1]);
+            System.out.println(type);
+            System.out.println(temp[3]);
+            addServer(new servComponent(Double.parseDouble(temp[0]), temp[1], type, new Point((int)Double.parseDouble(temp[3]), (int)Double.parseDouble(temp[4]))));
+        }
+        repaint();
+    }
+
+    public String getCurrentDesign() {
+        String design = "";
+        for (servComponent servComponent : compList) {
+            //Double availability, String name, serverType type, Point startPoint
+            String tempType;
+            switch (servComponent.getType()){
+                case FIREWALL:
+                    tempType = "fw";
+                    break;
+                case DATABASE:
+                    tempType = "db";
+                    break;
+                case WEB:
+                    tempType = "web";
+                    break;
+                default:
+                    tempType = "";
+                    break;
+            }
+            design += servComponent.getAvailability().toString() + "|" + servComponent.getName() + "|" + tempType + "|" + servComponent.currentPt.getX() + "|" + servComponent.currentPt.getY();
+            design += "\n";
+        }
+        return design.substring(0, design.length() - 1);
+    }
 }
