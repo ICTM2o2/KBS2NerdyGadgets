@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.jar.Manifest;
+
 import javax.swing.*;
 
 //joinked from https://www.youtube.com/watch?v=_fsee3Nu15U&t=88s&ab_channel=BroCode
@@ -13,6 +16,8 @@ public class dragPanel extends JPanel {
     private ArrayList<servComponent> databases = new ArrayList<>();
     private ArrayList<servComponent> webs = new ArrayList<>();
     private servComponent currentServ;
+    private ArrayList<servComponent> removeList = new ArrayList<>();
+    private OntwerperForm mainframe; 
     
     public void addServer(servComponent server){
         switch (server.getType()){
@@ -30,24 +35,17 @@ public class dragPanel extends JPanel {
                 break;
         }
         compList.add(server);
+        calculateAvailability(webs, databases, firewalls);
+        calculatePrices(webs, databases, firewalls);
     }
 
     
-    dragPanel(){
-        servComponent web1 = new servComponent(50.0, "WEB01", servComponent.serverType.WEB);
-        servComponent web2 = new servComponent(50.0, "WEB01", servComponent.serverType.WEB);
-        servComponent db1 = new servComponent(50.0, "DB01", servComponent.serverType.DATABASE);  
-        servComponent db2 = new servComponent(50.0, "DB02", servComponent.serverType.DATABASE);
-        servComponent fw1 = new servComponent(50.0, "FW1", servComponent.serverType.FIREWALL);    
-        addServer(web1);
-        addServer(web2);
-        addServer(db1);
-        addServer(db2);
-        addServer(fw1);
+    dragPanel(OntwerperForm frame){
         ClickListener clickListener = new ClickListener();
         DragListener dragListener = new DragListener();
         this.addMouseListener(clickListener);
         this.addMouseMotionListener(dragListener);
+        mainframe = frame;
     }
     
     @Override
@@ -83,27 +81,38 @@ public class dragPanel extends JPanel {
             g.setColor(Color.black);
             g.drawString(servComponent.getName(), (int)servComponent.currentPt.getX() + 5, (int)servComponent.currentPt.getY()  + servComponent.getImage().getIconHeight() + 10);
             g.drawString("beschikbaarheid: " + servComponent.getAvailability() + "%", (int)servComponent.currentPt.getX() + 5, (int)servComponent.currentPt.getY() + servComponent.getImage().getIconHeight() + 25);
+            g.drawString("Prijs: € " + servComponent.getPrice(), (int)servComponent.currentPt.getX() + 5, (int)servComponent.currentPt.getY() + servComponent.getImage().getIconHeight() + 40);
         }
     }
     
     private class ClickListener extends MouseAdapter{
         @Override
-        public void mousePressed(MouseEvent e) {  
+        public void mousePressed(MouseEvent e) {
             prevPt = e.getPoint(); 
             for (servComponent servComponent : compList) {
                 if ((e.getPoint().getX() > servComponent.currentPt.getX()) && 
                 (e.getPoint().getX() < (servComponent.currentPt.getX() + servComponent.getImage().getIconWidth())) &&
                 (e.getPoint().getY() > servComponent.currentPt.getY()) &&
                 (e.getPoint().getY() < (servComponent.currentPt.getY() + servComponent.getImage().getIconHeight()))){
-                    dragValid = true;
-                    currentServ = servComponent;
-                    return;
+                    if (e.getButton() == 3){
+                        removeList.add(servComponent);
+                    }
+                    else{
+                        dragValid = true;
+                        currentServ = servComponent;
+                        return;
+                    }
+                    
                 }
                 else{
                     dragValid = false;
                 }
             }
-
+            compList.removeAll(removeList);
+            firewalls.removeAll(removeList);
+            databases.removeAll(removeList);
+            webs.removeAll(removeList);
+            repaint();
         }
     }
 
@@ -120,6 +129,51 @@ public class dragPanel extends JPanel {
                 repaint();
             }
         }
+    }
+
+    private void calculateAvailability(ArrayList<servComponent> webs, ArrayList<servComponent> dbs, ArrayList<servComponent> fws){
+        // 90% -> 0.1   -> 0.1 ^ aantal servers    ->   (1 - 0.1^x) = availability
+        BigDecimal webAv = new BigDecimal("1"); //
+        for (servComponent w : webs) {
+            BigDecimal temp = BigDecimal.valueOf(w.getAvailability()/100);
+            temp = new BigDecimal("1").subtract(temp);
+            webAv = webAv.multiply(temp);
+        }
+        BigDecimal dbAv = new BigDecimal("1");
+        for (servComponent d : dbs) {
+            BigDecimal temp = BigDecimal.valueOf(d.getAvailability()/100);
+            temp = new BigDecimal("1").subtract(temp);
+            dbAv = dbAv.multiply(temp);
+        }
+        BigDecimal fwAv = new BigDecimal("1");
+        for (servComponent f : fws) {
+            BigDecimal temp = BigDecimal.valueOf(f.getAvailability()/100);
+            temp = new BigDecimal("1").subtract(temp);
+            fwAv = fwAv.multiply(temp);
+        }
+        double total =  new BigDecimal("1").subtract(fwAv.multiply(dbAv.multiply(webAv))).multiply(new BigDecimal("100")).doubleValue();
+        double web = new BigDecimal("1").subtract(webAv).multiply(new BigDecimal("100")).doubleValue();
+        double db = new BigDecimal("1").subtract(dbAv).multiply(new BigDecimal("100")).doubleValue();
+        double fw = new BigDecimal("1").subtract(fwAv).multiply(new BigDecimal("100")).doubleValue();
+        mainframe.setAvails(total,fw, web, db);
+    }
+
+    private void calculatePrices(ArrayList<servComponent> webs, ArrayList<servComponent> dbs, ArrayList<servComponent> fws){
+        double webT = 0;
+        double dbsT = 0;
+        double fwsT = 0;
+        double T = 0;
+        for (servComponent i : webs) {
+            webT += i.getPrice();
+        }
+        for (servComponent i : dbs) {
+            dbsT += i.getPrice();
+        }
+        for (servComponent i : fws) {
+            fwsT += i.getPrice();
+        }
+        T = webT + dbsT + fwsT;
+        mainframe.setPrices(T, fwsT, webT,dbsT);
     }
 
     private void clearServers(){
@@ -152,7 +206,7 @@ public class dragPanel extends JPanel {
             System.out.println(temp[1]);
             System.out.println(type);
             System.out.println(temp[3]);
-            addServer(new servComponent(Double.parseDouble(temp[0]), temp[1], type, new Point((int)Double.parseDouble(temp[3]), (int)Double.parseDouble(temp[4]))));
+            addServer(new servComponent(Double.parseDouble(temp[0]), temp[1], type, new Point((int)Double.parseDouble(temp[3]), (int)Double.parseDouble(temp[4])), Double.parseDouble(temp[5])));
         }
         repaint();
     }
@@ -176,7 +230,7 @@ public class dragPanel extends JPanel {
                     tempType = "";
                     break;
             }
-            design += servComponent.getAvailability().toString() + "|" + servComponent.getName() + "|" + tempType + "|" + servComponent.currentPt.getX() + "|" + servComponent.currentPt.getY();
+            design += servComponent.getAvailability().toString() + "|" + servComponent.getName() + "|" + tempType + "|" + servComponent.currentPt.getX() + "|" + servComponent.currentPt.getY() + "|" + servComponent.getPrice();
             design += "\n";
         }
         return design.substring(0, design.length() - 1);
