@@ -84,6 +84,7 @@ public class dragPanel extends JPanel {
             g.drawString("Prijs: € " + servComponent.getPrice(), (int)servComponent.currentPt.getX() + 5, (int)servComponent.currentPt.getY() + servComponent.getImage().getIconHeight() + 40);
         }
     }
+
     
     private class ClickListener extends MouseAdapter{
         @Override
@@ -112,6 +113,8 @@ public class dragPanel extends JPanel {
             firewalls.removeAll(removeList);
             databases.removeAll(removeList);
             webs.removeAll(removeList);
+            calculateAvailability(webs, databases, firewalls);
+            calculatePrices(webs, databases, firewalls);
             repaint();
         }
     }
@@ -202,10 +205,6 @@ public class dragPanel extends JPanel {
                     type = servComponent.serverType.FIREWALL;
                     break;
             }
-            System.out.println(Double.parseDouble(temp[0]));
-            System.out.println(temp[1]);
-            System.out.println(type);
-            System.out.println(temp[3]);
             addServer(new servComponent(Double.parseDouble(temp[0]), temp[1], type, new Point((int)Double.parseDouble(temp[3]), (int)Double.parseDouble(temp[4])), Double.parseDouble(temp[5])));
         }
         repaint();
