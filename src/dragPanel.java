@@ -39,7 +39,6 @@ public class dragPanel extends JPanel {
         calculatePrices(webs, databases, firewalls);
     }
 
-    
     dragPanel(OntwerperForm frame){
         ClickListener clickListener = new ClickListener();
         DragListener dragListener = new DragListener();
@@ -47,7 +46,7 @@ public class dragPanel extends JPanel {
         this.addMouseMotionListener(dragListener);
         mainframe = frame;
     }
-    
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

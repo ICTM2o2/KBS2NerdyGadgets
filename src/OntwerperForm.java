@@ -8,24 +8,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 
 public class OntwerperForm extends JFrame implements ActionListener{
     private GridBagConstraints gbc = new GridBagConstraints();
-
     //buttons etc
-    private JButton saveBtn;
-    private JButton loadBtn;
-    private JButton backBtn;
-    private JLabel totalAv, webAv, dbAv, fwAv;
-    private JLabel totalPr, webPr, dbPr, fwPr;
-    private JTextField priceTxt;
-    private JTextField nameTxt;
-    private JTextField availTxt;
-    private JButton addBtn;
+    private JButton saveBtn, loadBtn, backBtn, addBtn;
+    private JLabel totalAv, webAv, dbAv, fwAv, totalPr, webPr, dbPr, fwPr;
+    private JTextField priceTxt, nameTxt, availTxt;
     private dragPanel dPanel = new dragPanel(this);
     private JComboBox<servComponent.serverType> componentBox;
-    ArrayList<JPanel> components = new ArrayList<JPanel>(); 
 
     public OntwerperForm(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

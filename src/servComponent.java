@@ -7,16 +7,14 @@ public class servComponent {
     private String name;
     private serverType type;
     public Point currentPt;
-    private double price;
-    
-    
+    private Double price;
+      
     enum serverType {
         FIREWALL,
         DATABASE,
         WEB
     }
 
-    
 
     public servComponent(Double availability, String name, serverType type, Point startPoint, double price) {
         switch (type){
@@ -59,11 +57,10 @@ public class servComponent {
 
     public void setPrice(double price) {
         if (price < 0){
-            this.price = 0;
+            this.price = 0.0;
         }
         this.price = Math.round(price * 100.0) / 100.0; //2 decimal
     }
-
 
     public serverType getType() {
         return type;
