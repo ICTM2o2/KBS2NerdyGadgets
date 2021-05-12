@@ -43,10 +43,15 @@ public class HomeForm extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
-        if (btnServerMonitor.isEnabled()) {
-            MonitoringForm monitoringform1 = new MonitoringForm();
-
+        if (e.getSource() == btnServerMonitor) {
+            MonitoringForm f = new MonitoringForm();
+            f.setVisible(true);
         }
+        if (e.getSource() == btnServerConfigure){
+            OntwerperForm f = new OntwerperForm();
+            f.setVisible(true);
+        }
+
     }
 }
 
