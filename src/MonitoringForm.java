@@ -16,7 +16,7 @@ public class MonitoringForm extends JFrame implements ActionListener {
     private JSeparator Bottom;
     //private ArrayList<Componenten> database;
     private ArrayList<JPanel> panels = new ArrayList<>();
-    public int aantalservers = 8;
+    public int aantalservers = 4;
     private boolean isOnline = false;
     private JScrollPane scrollPane = new JScrollPane();
     private JButton terugknop;
@@ -28,20 +28,20 @@ public class MonitoringForm extends JFrame implements ActionListener {
         setBounds(0, 0, 1000,750 );
         Border border_g = BorderFactory.createLineBorder(Color.green);
         Border border_r = BorderFactory.createLineBorder(Color.red);
-        //arraylist panels legen
-//        public void getComponent () {
-//            for (int i = 0; i < panels.size(); i++) {
-//                this.remove(panels.get(i));
-//            }
-//            panels.clear();
         setLayout(new FlowLayout());
+
+        // Label voor titel
+        JLabel Monitoring = new JLabel("MONITORING");
+        Monitoring.setFont(new Font("Arial", Font.PLAIN, 30));
+        Monitoring.setPreferredSize(new Dimension(300, 50));
+        Monitoring.setHorizontalAlignment(SwingConstants.CENTER);
+        add(Monitoring);
+
+        //terugknop naar home
         terugknop = new JButton("Terug");
         terugknop.addActionListener(this);
+        terugknop.setHorizontalAlignment(SwingConstants.RIGHT);
         add(terugknop);
-
-
-
-        // Panels aanmaken voor momentele componenten
 
 
         JScrollPane scrollPane = new JScrollPane(panel1,   ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -52,8 +52,8 @@ public class MonitoringForm extends JFrame implements ActionListener {
             for (int i = 1; i <= aantalservers; i++) {
                 Component = new JPanel();
                 Component.setLayout(new GridLayout(0,1));
-                Component.setPreferredSize(new Dimension(200, 400));
-                Component.setBackground(Color.GRAY);
+                Component.setSize(new Dimension(200, 300));
+                Component.setBackground(Color.gray);
 
                 Naam = new JLabel("Server " + i);
                 Naam.setBorder(border2);
@@ -150,7 +150,6 @@ public class MonitoringForm extends JFrame implements ActionListener {
 
             }
 
-            scrollPane.getViewport().add(Component, null);
         this.revalidate();
 
         add(scrollPane);
@@ -165,93 +164,12 @@ public class MonitoringForm extends JFrame implements ActionListener {
 
     @Override
         public void actionPerformed (ActionEvent e){
+        if(e.getSource() == terugknop){
+            HomeForm home = new HomeForm();
+            home.setVisible(true);
+            setVisible(false);
+
+        }
 
         }
     }
-
-//import javax.swing.*;
-//import java.awt.*;
-//import java.awt.event.ActionEvent;
-//import java.awt.event.ActionListener;
-//import java.util.concurrent.Flow;
-//
-//public class MonitoringForm extends JFrame implements ActionListener{
-//    private JButton terugknop;
-//    private JTextField servernamen;
-//    private JScrollBar scrollBar;
-//    public  boolean isOnline = true;
-//    int[] servernummer;
-//
-//    public MonitoringForm() {
-//        setTitle("SERVER MONITORING");
-//        setBounds(0, 0, 650, 550);
-//        terugknop = new JButton("Terug");
-//        terugknop.addActionListener(this);
-//        add(terugknop);
-//
-//        JPanel servers = new JPanel();
-//        add(servers);
-//
-//        setPreferredSize(new Dimension(650, 300));
-//        setMaximumSize(getPreferredSize());
-//        getContentPane().setLayout(
-//                new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS)
-//        );
-//
-//        for (int i = 1; i <= servernummer.length; i++) {
-//            JLabel title = new JLabel("Server " + i);
-//            title.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-//            add(title, BorderLayout.CENTER);
-//
-//            JLabel uptime = new JLabel("Uptime: ");
-//            uptime.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-//            add(uptime, BorderLayout.CENTER);
-//
-//            JLabel diskruimte = new JLabel("Diskruimte");
-//            diskruimte.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-//            add(diskruimte, BorderLayout.CENTER);
-//
-//            JLabel dagenBeschikbaar = new JLabel("Dagen beschikbaar: ");
-//            dagenBeschikbaar.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-//            add(dagenBeschikbaar, BorderLayout.CENTER);
-//
-//            JLabel processorBelasting = new JLabel("Processor belasting: ");
-//            processorBelasting.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-//            add(processorBelasting, BorderLayout.CENTER);
-//
-//            if (isOnline) {
-//                //zorg dat het programma een vinkje weergeeft onder de serverinfo.
-//                ImageIcon vinkje = new ImageIcon("C:/Users/Bart de Boer/Documents/School/SEMESTER2/KBS.d/download.png");
-//                JLabel imagelabel = new JLabel(vinkje);
-//
-//            } else {
-//                //zorg dat het programma een kruisje weergeeft onder de serverinfo
-//
-//            }
-//        }
-//
-//
-//        JScrollPane listScroller = new JScrollPane();
-//        listScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-//        add(listScroller);
-//
-//
-//
-//
-//        setVisible(true);
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//
-//    }
-//
-//
-//
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//
-//
-//    }
-//
-//    /* Listeners ================================================== */
-//
-//
-//}
