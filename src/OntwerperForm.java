@@ -137,13 +137,13 @@ public class OntwerperForm extends JFrame implements ActionListener{
             Double availability, priceDbl;
             try {
                 availability = Double.parseDouble(availTxt.getText());
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 availability = 0.0;
             }
             
             try {
                 priceDbl = Double.parseDouble(priceTxt.getText());
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 priceDbl = 0.0;
             }
 

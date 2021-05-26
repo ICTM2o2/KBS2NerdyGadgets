@@ -14,23 +14,27 @@ public class BTavail {
         allComps.add(d);
         allComps.add(w1);
         allComps.add(d1);
-        solve(allComps, new ArrayList<servComponent>(), 99.99, 70000, 15);
+        solve(allComps, new ArrayList<servComponent>(), 99.99, 70000, 15);//37600
     }
 
+    static ArrayList<servComponent> finalList = new ArrayList<>();
+
     public static void printComps(ArrayList<servComponent> components){
-        //System.out.println("========");
+        System.out.println("========");
         System.out.println("price: "+calcPrice(components));
-        // for (servComponent c : components) {
-        //     System.out.println(c.getName());
-        // }
-        // System.out.println("========");
+        for (servComponent c : components) {
+            System.out.println(c.getName());
+        }
+        System.out.println("========");
     }
 
     public static int curlow = Integer.MAX_VALUE;
 
     public static void solve(ArrayList<servComponent> allComps, ArrayList<servComponent> currentComps, double desiredAvailability, int hardPriceLimit, int hardCompLimit){
         if (isSolution(currentComps, desiredAvailability) && calcPrice(currentComps) < curlow && calcPrice(currentComps) <= hardPriceLimit){
+
             curlow = calcPrice(currentComps);
+            finalList = currentComps;
             printComps(currentComps);
             return;
         }
@@ -39,8 +43,16 @@ public class BTavail {
             ArrayList<servComponent> temp = new ArrayList<>();//create temporary list
             temp.addAll(currentComps);//add all previous things in tree
             temp.add(servComponent);
+
+            //create temporary allcomps list without the comps that are cheaper than servComponent | sort on price???
+            ArrayList<servComponent> tempAll = new ArrayList<>();//create temporary list
+            for (servComponent c : allComps) {
+                if (c.getPrice() >= servComponent.getPrice()){
+                    tempAll.add(c);
+                }
+            }
             if (temp.size() <= hardCompLimit){
-                solve(allComps, temp, desiredAvailability, hardPriceLimit, hardCompLimit);//recurse
+                solve(tempAll, temp, desiredAvailability, hardPriceLimit, hardCompLimit);//recurse
             }
         }
         
@@ -75,30 +87,41 @@ public class BTavail {
         }
         BigDecimal webAv = new BigDecimal("1"); //
         for (servComponent w : webs) {
-            BigDecimal temp = BigDecimal.valueOf(w.getAvailability()/100);
-            temp = new BigDecimal("1").subtract(temp);
-            webAv = webAv.multiply(temp);
+            if (!webs.isEmpty()) {
+                BigDecimal temp = BigDecimal.valueOf(w.getAvailability()/100);
+                temp = new BigDecimal("1").subtract(temp);
+                webAv = webAv.multiply(temp);
+            }
+            else{
+                webAv = new BigDecimal("0");
+            }
         }
         BigDecimal dbAv = new BigDecimal("1");
         for (servComponent d : dbs) {
-            BigDecimal temp = BigDecimal.valueOf(d.getAvailability()/100);
-            temp = new BigDecimal("1").subtract(temp);
-            dbAv = dbAv.multiply(temp);
+            if (!dbs.isEmpty()) {
+                BigDecimal temp = BigDecimal.valueOf(d.getAvailability()/100);
+                temp = new BigDecimal("1").subtract(temp);
+                dbAv = dbAv.multiply(temp);
+            }
+            else{
+                dbAv = new BigDecimal("0");
+            }
         }
         BigDecimal fwAv = new BigDecimal("1");
         for (servComponent f : fws) {
-            BigDecimal temp = BigDecimal.valueOf(f.getAvailability()/100);
-            temp = new BigDecimal("1").subtract(temp);
-            fwAv = fwAv.multiply(temp);
+            if (!fws.isEmpty()) {
+                BigDecimal temp = BigDecimal.valueOf(f.getAvailability()/100);
+                temp = new BigDecimal("1").subtract(temp);
+                fwAv = fwAv.multiply(temp);
+            }
+            else{
+                fwAv = new BigDecimal("0");
+            }
         }
-        double total =  new BigDecimal("1").subtract(fwAv.multiply(dbAv.multiply(webAv))).multiply(new BigDecimal("100")).doubleValue();
         double web = new BigDecimal("1").subtract(webAv).multiply(new BigDecimal("100")).doubleValue();
         double db = new BigDecimal("1").subtract(dbAv).multiply(new BigDecimal("100")).doubleValue();
         double fw = new BigDecimal("1").subtract(fwAv).multiply(new BigDecimal("100")).doubleValue();
-        // System.out.println("total: " + total);
-        // System.out.println("web: " + web);
-        // System.out.println("db: " + db);
-        // System.out.println("fw: " + fw);
+        double total =  new BigDecimal("1").subtract(fwAv.multiply(dbAv.multiply(webAv))).multiply(new BigDecimal("100")).doubleValue();
         return (total >= desiredAvailability && web >= desiredAvailability && fw >= desiredAvailability && db >= desiredAvailability);
         
     }

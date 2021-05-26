@@ -1,7 +1,7 @@
 import javax.swing.ImageIcon;
 import java.awt.Point;
 
-public class servComponent {
+public class servComponent{ //implements Comparable {
     private ImageIcon image;
     private Double availability;
     private String name;
@@ -50,6 +50,12 @@ public class servComponent {
     public servComponent(Double availability, String name, serverType type, double price){
         this(availability, name, type, new Point(10,10),price);
     }
+
+    // @Override
+    // public int compareTo(Object comparestu) {
+    //     int compareprice = (int)comparestu.getPrice();
+    //     return (int)this.getPrice()-compareprice;
+    // }
 
     public double getPrice() {
         return price;
