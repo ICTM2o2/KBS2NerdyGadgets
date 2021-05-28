@@ -2,8 +2,6 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Connect {
-    public Connect() {
-    }
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         ArrayList<String> servernames = new ArrayList();
@@ -15,9 +13,11 @@ public class Connect {
         String username = "root";
         String password = "";
 
+
         Connection connection = DriverManager.getConnection(url, username, password);
 
         Class.forName("com.mysql.jdbc.Driver");
+
         Statement statement = connection.createStatement();
 
         ResultSet rs = statement.executeQuery("SELECT * FROM monitoring_info");
